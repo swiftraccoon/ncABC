@@ -17,8 +17,8 @@ To set up this project on your local machine, follow these steps:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/ncABC-inventory-app.git
-   cd ncABC-inventory-app
+   gh repo clone swiftraccoon/ncABC
+   cd ncABC
    ```
 
 2. **Install Dependencies**
