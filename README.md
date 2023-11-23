@@ -53,7 +53,8 @@ To set up this project on your local machine, follow these steps:
    python app.py
    ```
 
-   Visit `http://localhost:5000` in your web browser to view the application.
+   Visit `http://localhost:5000` in your web browser to view the main application.
+   Data Analysis graphs are accessible at `http://localhost:5000/data-analysis`
 
 ## Usage
 
