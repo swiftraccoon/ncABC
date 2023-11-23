@@ -3,6 +3,8 @@ import sqlite3
 import os
 import pandas as pd
 import plotly.express as px
+from sklearn.linear_model import LinearRegression
+import numpy as np
 
 inventory_bp = Blueprint('inventory_bp', __name__)
 
@@ -133,6 +135,51 @@ def available_suppliers():
     suppliers = [row[0] for row in cursor.fetchall()]
     conn.close()
     return jsonify(suppliers)
+
+
+@inventory_bp.route('/brand-analysis', methods=['GET', 'POST'])
+def brand_analysis():
+    conn = get_db_connection()
+    brands_df = pd.read_sql_query(
+        "SELECT DISTINCT brand_name FROM inventory", conn)
+    brands = brands_df['brand_name'].tolist()
+
+    selected_brands = request.form.getlist(
+        'brand[]') if request.method == 'POST' else []
+    # suppliers = request.form.getlist('supplier[]')
+
+    graphs_html = []
+    if selected_brands:
+        for brand in selected_brands:
+            safe_brand = brand.replace("'", "''")
+
+        # Corrected Graph 1: Brand's Inventory Over Time with Predictive Trend
+        df = pd.read_sql_query(f"""
+            SELECT DATE(h.date) as date, SUM(h.total_available) as total_available 
+            FROM historical_inventory h
+            JOIN inventory i ON h.nc_code = i.nc_code
+            WHERE i.brand_name = '{safe_brand}' 
+            GROUP BY DATE(h.date)
+            """, conn)
+        df['date_num'] = pd.to_datetime(df['date']).map(pd.Timestamp.toordinal)
+        X = df[['date_num']]
+        y = df['total_available']
+
+        # Fit linear regression model
+        model = LinearRegression().fit(X, y)
+        df['predicted'] = model.predict(X)
+
+        fig = px.scatter(df, x='date', y='total_available',
+                         title=f'Inventory Over Time for {brand}')
+        fig.add_scatter(x=df['date'], y=df['predicted'],
+                        mode='lines', name='Predicted')
+        fig.update_layout(plot_bgcolor='rgba(0,0,0,0)',
+                          paper_bgcolor='rgba(0,0,0,0)', font_color='white')
+        graphs_html.append(fig.to_html())
+
+        # Additional predictive graphs can be added here
+
+    return render_template('brand_analysis.html', brands=brands, graphs_html=graphs_html)
 
 
 @inventory_bp.route('/data-analysis')
