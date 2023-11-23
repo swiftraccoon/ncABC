@@ -81,6 +81,6 @@ Contributions to this project are welcome. Please follow these steps to contribu
 ## License
 
 Distributed under the GPL3 License. See `LICENSE` for more information.
-
-![InvAnalysis(InvAnalysis.png)
-![BrandAnalysis(BrandAnalysis.png)
+![Index](Index.png)
+![InvAnalysis](InvAnalysis.png)
+![BrandAnalysis](BrandAnalysis.png)
