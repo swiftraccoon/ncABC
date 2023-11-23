@@ -77,3 +77,5 @@ Contributions to this project are welcome. Please follow these steps to contribu
 ## License
 
 Distributed under the GPL3 License. See `LICENSE` for more information.
+
+![Screenshot](Screenshot.png)
