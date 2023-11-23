@@ -78,4 +78,5 @@ Contributions to this project are welcome. Please follow these steps to contribu
 
 Distributed under the GPL3 License. See `LICENSE` for more information.
 
-![Screenshot](Screenshot.png)
+![InvAnalysis(InvAnalysis.png)
+![BrandAnalysis(BrandAnalysis.png)
