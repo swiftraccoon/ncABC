@@ -92,6 +92,25 @@
         .carousel-btn.right {
             right: 70px;
         }
+        /* Normal (unvisited) link color */
+        a {
+            color: #eeff00; /* You can use any color value you prefer */
+        }
+
+        /* Visited link color */
+        a:visited {
+            color: #4CAF50; /* Change the color for visited links */
+        }
+
+        /* Hover (mouse over) link color */
+        a:hover {
+            color: #ff6600; /* Change the color when hovering over the link */
+        }
+
+        /* Active (clicked) link color */
+        a:active {
+            color: #cc0000; /* Change the color when the link is clicked */
+        }
     </style>
 </head>
 <body>
@@ -124,16 +143,11 @@
             <input type="submit" value="Compare">
         </form>
     </div><br />
-    <!-- Image Carousel for Graphs -->
-    <div class="carousel-wrapper">
-        <!-- Image Carousel for Graphs -->
-        <div id="graphCarousel" class="carousel">
-            <!-- Dynamically inserted carousel items will go here -->
-        </div>
-    
-        <!-- Arrows for Navigation -->
-        <button class="carousel-btn left" onclick="navigateCarousel(-1)">←</button>
-        <button class="carousel-btn right" onclick="navigateCarousel(1)">→</button>
+    <div class="container">
+        <h1>
+            <a href="/data-analysis">Inventory Analysis</a><br />
+            <a href="/brand-analysis">Brand Analysis</a>
+        </h1>
     </div>
 
     <!-- jQuery and Select2 JavaScript -->
@@ -141,23 +155,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 
     <script>
-        let currentGraphIndex = 0;
-        const graphFilenames = {{ graph_filenames | tojson }};
+        //let currentGraphIndex = 0;
+        //const graphFilenames = {{ graph_filenames | tojson }};
 
-        function showGraph(index) {
-            const carousel = document.getElementById("graphCarousel");
-            carousel.innerHTML = `<img src="static/img/graphs/${graphFilenames[index]}" alt="Graph">`;
-        }
+        // function showGraph(index) {
+        //     const carousel = document.getElementById("graphCarousel");
+        //     carousel.innerHTML = `<img src="static/img/graphs/${graphFilenames[index]}" alt="Graph">`;
+        // }
 
-        function navigateCarousel(direction) {
-            currentGraphIndex += direction;
-            if (currentGraphIndex < 0) currentGraphIndex = graphFilenames.length - 1;
-            if (currentGraphIndex >= graphFilenames.length) currentGraphIndex = 0;
-            showGraph(currentGraphIndex);
-        }
+        // function navigateCarousel(direction) {
+        //     currentGraphIndex += direction;
+        //     if (currentGraphIndex < 0) currentGraphIndex = graphFilenames.length - 1;
+        //     if (currentGraphIndex >= graphFilenames.length) currentGraphIndex = 0;
+        //     showGraph(currentGraphIndex);
+        // }
 
         // Initialize the carousel with the first graph
-        showGraph(currentGraphIndex);
+        //showGraph(currentGraphIndex);
         $(document).ready(function() {
             // Initialize Select2 with multi-select for suppliers
             $('#supplier').select2({ width: '200px' }).on('select2:select select2:unselect', function (e) {
