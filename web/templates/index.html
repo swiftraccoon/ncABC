@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Comparison</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #121212;
+            color: #353535;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: block;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            background-color: #1e1e1e;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50; /* Green-ish color for header */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            color: rgb(14, 172, 0);
+        }
+
+        select, input[type=submit] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background-color: #333;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        select option {
+            background-color: #333; /* Dark background for options */
+            color: #ffffff; /* Light color for text */
+        }
+
+        input[type=submit]:hover {
+            background-color: #4CAF50;
+            cursor: pointer;
+        }
+        .carousel-wrapper {
+            position: relative;
+            margin-top: 30px; /* Space below the form */
+        }
+
+        .carousel {
+            text-align: center;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .carousel img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(66, 66, 66, 0.5);
+            color: rgb(255, 0, 0);
+            border: green;
+            padding: 30px;
+            cursor: pointer;
+        }
+
+        .carousel-btn.left {
+            left: 70px;
+        }
+
+        .carousel-btn.right {
+            right: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventory Comparison</h1>
+        <form method="post" action="/">
+            <div>
+                <label for="date1">Date 1:</label>
+                <select id="date1" name="date1"></select>
+            </div><br />
+            <div>
+                <label for="date2">Date 2:</label>
+                <select id="date2" name="date2"></select>
+            </div><br />
+            <div>
+                <label for="supplier">Supplier:</label>
+                <select id="supplier" name="supplier[]" multiple="multiple">
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <!-- Comparison Type Selection -->
+            <div><br />
+                <label for="comparisonType">Comparison Type:</label>
+                <select id="comparisonType" name="comparisonType">
+                    <option value="direct">Direct Date</option>
+                    <option value="range">Date Range</option>
+                </select>
+            </div>
+            <br /><br />
+            <input type="submit" value="Compare">
+        </form>
+    </div><br />
+    <!-- Image Carousel for Graphs -->
+    <div class="carousel-wrapper">
+        <!-- Image Carousel for Graphs -->
+        <div id="graphCarousel" class="carousel">
+            <!-- Dynamically inserted carousel items will go here -->
+        </div>
+    
+        <!-- Arrows for Navigation -->
+        <button class="carousel-btn left" onclick="navigateCarousel(-1)">←</button>
+        <button class="carousel-btn right" onclick="navigateCarousel(1)">→</button>
+    </div>
+
+    <!-- jQuery and Select2 JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+    <script>
+        let currentGraphIndex = 0;
+        const graphFilenames = {{ graph_filenames | tojson }};
+
+        function showGraph(index) {
+            const carousel = document.getElementById("graphCarousel");
+            carousel.innerHTML = `<img src="static/img/graphs/${graphFilenames[index]}" alt="Graph">`;
+        }
+
+        function navigateCarousel(direction) {
+            currentGraphIndex += direction;
+            if (currentGraphIndex < 0) currentGraphIndex = graphFilenames.length - 1;
+            if (currentGraphIndex >= graphFilenames.length) currentGraphIndex = 0;
+            showGraph(currentGraphIndex);
+        }
+
+        // Initialize the carousel with the first graph
+        showGraph(currentGraphIndex);
+        $(document).ready(function() {
+            // Initialize Select2 with multi-select for suppliers
+            $('#supplier').select2({ width: '200px' }).on('select2:select select2:unselect', function (e) {
+                var selected = $(this).val();
+                if (selected.length > 1 && selected.includes('all')) {
+                    if (e.params.data.id === 'all') {
+                        // If "All" is selected, clear other selections
+                        $(this).val('all').trigger('change');
+                    } else {
+                        // If a specific supplier is selected, remove "All" from selections
+                        $(this).val(selected.filter(item => item !== 'all')).trigger('change');
+                    }
+                }
+            });
+        
+            // Populate dates
+            $.getJSON('/available-dates', function(data) {
+                data.forEach(function(date) {
+                    $('#date1, #date2').append(new Option(date, date));
+                });
+                $('#date1, #date2').select2({ width: '200px' }); // Initialize Select2 for dates
+            });
+        
+            // Populate suppliers
+            $.getJSON('/available-suppliers', function(data) {
+                data.forEach(function(supplier) {
+                    $('#supplier').append(new Option(supplier, supplier));
+                });
+                $('#supplier').trigger('change'); // Update Select2 with new options
+            });
+        });
+    </script>
+</body>
+</html>

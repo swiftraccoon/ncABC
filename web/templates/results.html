@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comparison Results</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #a0a0a0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+        th {
+            background-color: #000000;
+        }
+        h2 {
+            color: #4CAF50; /* Stylish green-ish color */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 10px 15px;
+            text-align: left;
+            color: #ddd; /* Light grey color for readability */
+        }
+
+        th {
+            background-color: rgb(0, 138, 62);
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #242424; /* Slightly lighter than body background */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #000000; /* Slightly lighter than body background */
+        }
+
+        tr:hover {
+            background-color: #2e2e2e; /* Hover effect */
+        }
+
+        @media screen and (max-width: 600px) {
+            table {
+                border: 0;
+            }
+
+            th, td {
+                padding: 10px;
+                display: block;
+                text-align: right;
+            }
+
+            th {
+                text-align: left;
+            }
+
+            td {
+                border-bottom: 1px solid #444;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                color: #070707;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Comparison Results</h1>
+    {% if results %}
+        <table>
+            {% if comparison_type == 'direct' %}
+                <tr>
+                    <th>NC Code</th>
+                    <th>Supplier Name</th>
+                    <th>Brand Name</th>
+                    <th>Total Avail. on {{ date1 }}</th>
+                    <th>Total Avail. on {{ date2 }}</th>
+                    <th>Percentage Change</th>
+                </tr>
+                {% for row in results %}
+                    <tr>
+                        <td>{{ row.nc_code }}</td>
+                        <td>{{ row.supplier_name }}</td>
+                        <td>{{ row.brand_name }}</td>
+                        <td>{{ row.total_available_date1 }}</td>
+                        <td>{{ row.total_available_date2 }}</td>
+                        <td>{{ row.percentage_change }}%</td>
+                    </tr>
+                {% endfor %}
+            {% elif comparison_type == 'range' %}
+                <tr>
+                    <th>Brand Name</th>
+                    <th>Supplier Name</th>
+                    {% for date in unique_dates %}
+                        <th>{{ date }}</th>
+                    {% endfor %}
+                </tr>
+                {% for brand, data in results.items() %}
+                    <tr>
+                        <td>{{ brand }}</td>
+                        <td>{{ data.supplier_name }}</td>
+                        {% for date in unique_dates %}
+                            <td>{{ data.totals.get(date, 'N/A') }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</html>
