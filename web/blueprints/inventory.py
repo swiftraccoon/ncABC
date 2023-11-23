@@ -177,7 +177,63 @@ def brand_analysis():
                           paper_bgcolor='rgba(0,0,0,0)', font_color='white')
         graphs_html.append(fig.to_html())
 
-        # Additional predictive graphs can be added here
+        # Graph 2: Average Monthly Inventory Levels
+        df_monthly = pd.read_sql_query(f"""
+            SELECT strftime('%Y-%m', h.date) as month, AVG(h.total_available) as avg_available
+            FROM historical_inventory h
+            JOIN inventory i ON h.nc_code = i.nc_code
+            WHERE i.brand_name = '{safe_brand}'
+            GROUP BY month
+            """, conn)
+        fig_monthly = px.bar(df_monthly, x='month', y='avg_available',
+                             title=f'Average Monthly Inventory for {brand}')
+        fig_monthly.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font_color='white')
+        graphs_html.append(fig_monthly.to_html())
+
+        # Graph 3: Rate of Inventory Change
+        df_rate = pd.read_sql_query(f"""
+            SELECT h.date, (h.total_available - LAG(h.total_available) OVER (ORDER BY h.date)) as rate_change
+            FROM historical_inventory h
+            JOIN inventory i ON h.nc_code = i.nc_code
+            WHERE i.brand_name = '{safe_brand}'
+            """, conn)
+        fig_rate = px.line(df_rate, x='date', y='rate_change',
+                           title=f'Rate of Inventory Change for {brand}')
+        fig_rate.update_layout(plot_bgcolor='rgba(0,0,0,0)',
+                               paper_bgcolor='rgba(0,0,0,0)', font_color='white')
+        graphs_html.append(fig_rate.to_html())
+
+        # Graph 4: Inventory Size Distribution Over Time
+        df_size = pd.read_sql_query(f"""
+            SELECT h.date, i.size, SUM(h.total_available) as total_available
+            FROM historical_inventory h
+            JOIN inventory i ON h.nc_code = i.nc_code
+            WHERE i.brand_name = '{safe_brand}'
+            GROUP BY h.date, i.size
+            """, conn)
+        fig_size = px.bar(df_size, x='date', y='total_available',
+                          color='size', title=f'Inventory Size Distribution for {brand}')
+        fig_size.update_layout(plot_bgcolor='rgba(0,0,0,0)',
+                               paper_bgcolor='rgba(0,0,0,0)', font_color='white')
+        graphs_html.append(fig_size.to_html())
+
+        # Graph 5: Supplier and Broker Influence on Inventory
+        df_supplier_broker = pd.read_sql_query(f"""
+            SELECT h.date, s.name as supplier, b.name as broker, SUM(h.total_available) as total_available
+            FROM historical_inventory h
+            JOIN inventory i ON h.nc_code = i.nc_code
+            JOIN suppliers s ON i.supplier_id = s.id
+            JOIN brokers b ON i.broker_id = b.id
+            WHERE i.brand_name = '{safe_brand}'
+            GROUP BY h.date, s.name, b.name
+            """, conn)
+        fig_supplier_broker = px.line(df_supplier_broker, x='date', y='total_available',
+                                      color='supplier', title=f'Supplier and Broker Influence for {brand}')
+        fig_supplier_broker.update_traces(mode='markers+lines')
+        fig_supplier_broker.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font_color='white')
+        graphs_html.append(fig_supplier_broker.to_html())
 
     return render_template('brand_analysis.html', brands=brands, graphs_html=graphs_html)
 
