@@ -140,45 +140,46 @@ def data_analysis():
     conn = get_db_connection()
 
     # Graph 1: Inventory Levels Over Time (Aggregated by Day)
-    df = pd.read_sql_query("SELECT DATE(date) as date, SUM(total_available) as total_cases_available FROM historical_inventory GROUP BY DATE(date)", conn)
-    fig1 = px.line(df, x='date', y='total_cases_available', title='Aggregated Inventory Over Time')
+    df = pd.read_sql_query(
+        "SELECT DATE(date) as date, SUM(total_available) as sum_of_total_available FROM historical_inventory GROUP BY DATE(date)", conn)
+    fig1 = px.line(df, x='date', y='sum_of_total_available', title='Aggregated Inventory Over Time',
+                   labels={'date': 'Date', 'sum_of_total_available': 'Current Sum of Total Available Cases'})
     fig1.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white'
     )
 
-
-
     # Graph 2: Brand-wise Inventory Distribution (Top 15)
     brand_df = pd.read_sql_query(
-        "SELECT brand_name, SUM(total_available) as total FROM inventory GROUP BY brand_name ORDER BY total DESC LIMIT 15", conn)
-    fig2 = px.bar(brand_df, x='brand_name', y='total',
-                  title='Top 15 Brand-wise Inventory Distribution')
+        "SELECT brand_name, SUM(total_available) as sum_of_total_available FROM inventory GROUP BY brand_name ORDER BY sum_of_total_available DESC LIMIT 15", conn)
+    fig2 = px.bar(brand_df, x='brand_name', y='sum_of_total_available',
+                  title='Top 15 Brand-wise Inventory Distribution',
+                  labels={'brand_name': 'Brand Name', 'sum_of_total_available': 'Current Sum of Total Available Cases'})
     fig2.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white'
     )
 
-
     # Graph 3: Inventory Size Distribution
     size_df = pd.read_sql_query(
-        "SELECT size, COUNT(*) as count FROM inventory GROUP BY size", conn)
-    fig3 = px.bar(size_df, x='size', y='count',
-                  title='Inventory Size Distribution')
+        "SELECT size as bottle_size, COUNT(*) as count_of_size_occurrence FROM inventory GROUP BY bottle_size", conn)
+    fig3 = px.bar(size_df, x='bottle_size', y='count_of_size_occurrence',
+                  title='Inventory Size Distribution',
+                  labels={'bottle_size': 'Size of Bottle', 'count_of_size_occurrence': 'Current Count of Occurence of Bottle Size'})
     fig3.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white'
     )
 
-
     # Graph 4: Supplier Contribution to Inventory (Top 15)
     supplier_df = pd.read_sql_query(
-        "SELECT suppliers.name, SUM(inventory.total_available) as total FROM inventory JOIN suppliers ON inventory.supplier_id = suppliers.id GROUP BY suppliers.name ORDER BY total DESC LIMIT 15", conn)
-    fig4 = px.bar(supplier_df, x='name', y='total',
-                  title='Current Top 15 Supplier Contribution to Inventory')
+        "SELECT suppliers.name, SUM(inventory.total_available) as sum_of_inv_total_avail FROM inventory JOIN suppliers ON inventory.supplier_id = suppliers.id GROUP BY suppliers.name ORDER BY sum_of_inv_total_avail DESC LIMIT 15", conn)
+    fig4 = px.bar(supplier_df, x='name', y='sum_of_inv_total_avail',
+                  title='Current Top 15 Supplier Contribution to Inventory',
+                  labels={'name': 'Supplier', 'sum_of_inv_total_avail': 'Current Sum of Total Available Cases'})
     fig4.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
@@ -200,13 +201,13 @@ def data_analysis():
     LIMIT 15
     """
     volume_df = pd.read_sql_query(volume_query, conn)
-    fig5 = px.bar(volume_df, x='brand_name', y='total_volume_ml', title='Top 15 Brands by Total Volume (ML)')
+    fig5 = px.bar(volume_df, x='brand_name', y='total_volume_ml', title='Top 15 Brands by Total Volume (mL)',
+                  labels={'brand_name': 'Brand Name', 'total_volume_ml': 'Current Sum of Total Volume (mL)'})
     fig5.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white'
     )
-
 
     # Convert the figures to HTML
     graphs_html = [fig.to_html() for fig in [fig1, fig2, fig3, fig4, fig5]]
