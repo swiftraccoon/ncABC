@@ -140,7 +140,7 @@ def data_analysis():
     conn = get_db_connection()
 
     # Graph 1: Inventory Levels Over Time (Aggregated by Day)
-    df = pd.read_sql_query("SELECT DATE(date) as date, SUM(total_available) as total_available FROM historical_inventory GROUP BY DATE(date)", conn)
+    df = pd.read_sql_query("SELECT DATE(date) as date, SUM(total_available) as total_cases_available FROM historical_inventory GROUP BY DATE(date)", conn)
     fig1 = px.line(df, x='date', y='total_cases_available', title='Aggregated Inventory Over Time')
     fig1.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
