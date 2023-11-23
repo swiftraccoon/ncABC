@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Analysis</title>
+    <!-- Add any additional CSS or JS links here -->
+</head>
+<body>
+    <h1>Inventory Analysis</h1>
+    {% for graph_html in graphs_html %}
+    <div class="graph">
+        {{ graph_html|safe }}
+    </div>
+    {% endfor %}
+</body>
+</html>

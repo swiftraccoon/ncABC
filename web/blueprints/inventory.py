@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify
 import sqlite3
 import os
+import pandas as pd
+import plotly.express as px
 
 inventory_bp = Blueprint('inventory_bp', __name__)
 
@@ -131,6 +133,59 @@ def available_suppliers():
     suppliers = [row[0] for row in cursor.fetchall()]
     conn.close()
     return jsonify(suppliers)
+
+
+@inventory_bp.route('/data-analysis')
+def data_analysis():
+    conn = get_db_connection()
+
+    # Graph 1: Inventory Levels Over Time (Aggregated by Day)
+    df = pd.read_sql_query("SELECT DATE(date) as date, SUM(total_available) as total_available FROM historical_inventory GROUP BY DATE(date)", conn)
+    fig1 = px.line(df, x='date', y='total_available', title='Aggregated Inventory Over Time')
+
+
+    # Graph 2: Brand-wise Inventory Distribution (Top 15)
+    brand_df = pd.read_sql_query(
+        "SELECT brand_name, SUM(total_available) as total FROM inventory GROUP BY brand_name ORDER BY total DESC LIMIT 15", conn)
+    fig2 = px.bar(brand_df, x='brand_name', y='total',
+                  title='Top 15 Brand-wise Inventory Distribution')
+
+    # Graph 3: Inventory Size Distribution
+    size_df = pd.read_sql_query(
+        "SELECT size, COUNT(*) as count FROM inventory GROUP BY size", conn)
+    fig3 = px.bar(size_df, x='size', y='count',
+                  title='Inventory Size Distribution')
+
+    # Graph 4: Supplier Contribution to Inventory (Top 15)
+    supplier_df = pd.read_sql_query(
+        "SELECT suppliers.name, SUM(inventory.total_available) as total FROM inventory JOIN suppliers ON inventory.supplier_id = suppliers.id GROUP BY suppliers.name ORDER BY total DESC LIMIT 15", conn)
+    fig4 = px.bar(supplier_df, x='name', y='total',
+                  title='Current Top 15 Supplier Contribution to Inventory')
+    
+
+    # Graph 5: Top 15 Brands by Total Volume (ML)
+    volume_query = """
+    SELECT brand_name, 
+           SUM(total_available * CASE 
+               WHEN size LIKE '%ML' THEN CAST(REPLACE(size, 'ML', '') AS INTEGER)
+               WHEN size LIKE '%L' THEN CAST(REPLACE(size, 'L', '') AS INTEGER) * 1000
+               WHEN size LIKE '%.L' THEN CAST(REPLACE(size, '.L', '') AS INTEGER) * 1000
+               ELSE 0
+           END) as total_volume_ml
+    FROM inventory
+    GROUP BY brand_name
+    ORDER BY total_volume_ml DESC
+    LIMIT 15
+    """
+    volume_df = pd.read_sql_query(volume_query, conn)
+    fig5 = px.bar(volume_df, x='brand_name', y='total_volume_ml', title='Top 15 Brands by Total Volume (ML)')
+
+
+
+    # Convert the figures to HTML
+    graphs_html = [fig.to_html() for fig in [fig1, fig2, fig3, fig4, fig5]]
+
+    return render_template('data_analysis.html', graphs_html=graphs_html)
 
 
 @inventory_bp.route('/', methods=['GET', 'POST'])

@@ -2,3 +2,10 @@ Flask
 SQLAlchemy
 python-dotenv
 Flask-Testing
+pandas
+matplotlib
+seaborn
+plotly
+scipy
+numpy
+bokeh
