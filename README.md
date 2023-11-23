@@ -1,20 +1,23 @@
 # NC ABC Inventory Comparison
-
 ## Description
 
-This Flask web application allows users to compare inventory data from the North Carolina Alcoholic Beverage Control (NC ABC) between two selected dates and perform advanced data analysis. Users can filter results based on a specific supplier, view inventory changes over time, and analyze data through various graphical representations.
+This Flask web application allows users to compare inventory data from the North Carolina Alcoholic Beverage Control (NC ABC) between two selected dates, perform advanced data analysis, and analyze brand-specific inventory trends. Users can filter results based on a specific supplier, view inventory changes over time, and analyze data through various graphical representations including predictive analytics for brand availability.
 
 ## Features
 
-- Compare inventory data between two dates.
-- Option to filter comparison by a specific supplier.
-- Visual display of inventory changes: new items, removed items, and quantity changes.
-- Advanced data analysis with interactive graphs, including:
-  - Inventory levels over time.
-  - Brand-wise inventory distribution.
-  - Inventory size distribution.
-  - Supplier contribution to inventory.
-  - Top 15 brands by total volume in milliliters.
+    Compare inventory data between two dates.
+    Option to filter comparison by a specific supplier.
+    Visual display of inventory changes: new items, removed items, and quantity changes.
+    Advanced data analysis with interactive graphs, including:
+        Inventory levels over time.
+        Brand-wise inventory distribution.
+        Inventory size distribution.
+        Supplier contribution to inventory.
+        Top 15 brands by total volume in milliliters.
+    Brand-specific analysis with predictive trends:
+        Interactive brand selector with multi-select and type-ahead features.
+        Predictive graphs showing historical and projected inventory levels for selected brands.
+        Insights to anticipate when specific brands will be available on local shelves.
 
 ## Setup and Installation
 
@@ -59,10 +62,11 @@ To set up this project on your local machine, follow these steps:
 
 ## Usage
 
-- On the home page, select two dates for which you want to compare inventory data.
-- Optionally, specify a supplier to filter the comparison.
-- Submit the form to view the comparison results.
-- Access the advanced analysis section to view interactive graphs and insights into the inventory data.
+    On the home page, select two dates for which you want to compare inventory data.
+    Optionally, specify a supplier to filter the comparison.
+    Submit the form to view the comparison results.
+    Access the advanced analysis section to view interactive graphs and insights into the inventory data.
+    Use the brand-specific analysis feature to select one or multiple brands and view predictive trends and availability insights.
 
 ## Contributing
 
