@@ -7,8 +7,11 @@
     <style>
         body {
             background-color: #121212;
-            color: #2e2e2e;
+            color: #222222;
             font-family: Arial, sans-serif;
+        }
+        .graph-container {
+            margin-top: 100px; /* Adjust this value as needed */
         }
         .graph {
             margin: 20px;
@@ -17,19 +20,34 @@
             border-radius: 10px;
             background-color: #1E1E1E;
         }
-        /* Additional custom styles if needed */
+        .selector-container {
+            position: relative;
+            top: 10px;
+            left: 10px;
+            background-color: #1E1E1E;
+            padding: 20px;
+            border: 1px solid #BB86FC;
+            border-radius: 10px;
+            max-width: fit-content;
+        }
+        h1 {
+            color: #BB86FC;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <h1>Brand Specific Analysis</h1>
-    <form action="/brand-analysis" method="post">
-        <select id="brand-selector" class="form-select" name="brand[]" multiple="multiple">
-            {% for brand in brands %}
-            <option value="{{ brand }}">{{ brand }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" class="btn btn-primary">Analyze</button>
-    </form>
+    <div class="selector-container">
+        <form action="/brand-analysis" method="post">
+            <select id="brand-selector" class="form-select" name="brand[]" multiple="multiple">
+                {% for brand in brands %}
+                <option value="{{ brand }}">{{ brand }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary mt-2">Analyze</button>
+        </form>
+    </div>
     {% for graph_html in graphs_html %}
     <div class="graph">
         {{ graph_html|safe }}
