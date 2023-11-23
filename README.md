@@ -2,13 +2,19 @@
 
 ## Description
 
-This Flask web application allows users to compare inventory data from the North Carolina Alcoholic Beverage Control (NC ABC) between two selected dates. Users can also filter results based on a specific supplier. The application fetches data from a SQLite database, displays differences in inventory, and provides insights into inventory changes over time.
+This Flask web application allows users to compare inventory data from the North Carolina Alcoholic Beverage Control (NC ABC) between two selected dates and perform advanced data analysis. Users can filter results based on a specific supplier, view inventory changes over time, and analyze data through various graphical representations.
 
 ## Features
 
 - Compare inventory data between two dates.
 - Option to filter comparison by a specific supplier.
 - Visual display of inventory changes: new items, removed items, and quantity changes.
+- Advanced data analysis with interactive graphs, including:
+  - Inventory levels over time.
+  - Brand-wise inventory distribution.
+  - Inventory size distribution.
+  - Supplier contribution to inventory.
+  - Top 15 brands by total volume in milliliters.
 
 ## Setup and Installation
 
@@ -54,6 +60,7 @@ To set up this project on your local machine, follow these steps:
 - On the home page, select two dates for which you want to compare inventory data.
 - Optionally, specify a supplier to filter the comparison.
 - Submit the form to view the comparison results.
+- Access the advanced analysis section to view interactive graphs and insights into the inventory data.
 
 ## Contributing
 
@@ -68,5 +75,3 @@ Contributions to this project are welcome. Please follow these steps to contribu
 ## License
 
 Distributed under the GPL3 License. See `LICENSE` for more information.
-
-```
