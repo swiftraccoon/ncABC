@@ -220,7 +220,9 @@ def brand_analysis():
 
         # Graph 5: Supplier and Broker Influence on Inventory
         df_supplier_broker = pd.read_sql_query(f"""
-            SELECT h.date, s.name as supplier, b.name as broker, SUM(h.total_available) as total_available
+            SELECT h.date, 
+                s.name || ' / ' || b.name as supplier_broker, 
+                SUM(h.total_available) as total_available
             FROM historical_inventory h
             JOIN inventory i ON h.nc_code = i.nc_code
             JOIN suppliers s ON i.supplier_id = s.id
@@ -228,8 +230,9 @@ def brand_analysis():
             WHERE i.brand_name = '{safe_brand}'
             GROUP BY h.date, s.name, b.name
             """, conn)
+
         fig_supplier_broker = px.line(df_supplier_broker, x='date', y='total_available',
-                                      color='supplier', title=f'Supplier and Broker Influence for {brand}')
+                                      color='supplier_broker', title=f'Supplier and Broker Influence for {brand}')
         fig_supplier_broker.update_traces(mode='markers+lines')
         fig_supplier_broker.update_layout(
             plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font_color='white')
