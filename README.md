@@ -70,8 +70,6 @@ To set up this project on your local machine, follow these steps:
 
    Visit `http://localhost:5000` in your web browser to view the main application.
 
-   Data Analysis graphs are accessible at `http://localhost:5000/data-analysis`
-
 ## Usage
 
 * On the home page, select two dates for which you want to compare inventory data.
