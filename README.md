@@ -48,7 +48,19 @@ To set up this project on your local machine, follow these steps:
    BACKUP_DIR=../data_management/csv_bkups
    ```
 
-4. **Running the Application**
+4. **Generate the Database**
+   
+   Before you can run the application you must first build the database.
+
+   To do this, run these commands:
+   ```bash
+   python data_management/data_management.py
+   python data_management/historical_insert.py
+   ```
+
+   You should now have a `data_management/inventory.db`
+
+6. **Running the Application**
 
    To run the application, execute:
 
