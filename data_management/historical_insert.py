@@ -32,7 +32,7 @@ def get_supplier_id(conn, supplier_name):
 
 def insert_historical_data(conn, df, date):
     cursor = conn.cursor()
-    print('DataFrame columns:', df.columns)
+    # print('DataFrame columns:', df.columns)
 
     # Add 'date' and 'supplier_id' columns to the DataFrame
     df['date'] = date
@@ -55,10 +55,11 @@ def insert_historical_data(conn, df, date):
         cursor.execute(
             "SELECT 1 FROM historical_inventory WHERE nc_code=? AND date=?", (row['nc_code'], date))
         if not cursor.fetchone():
+            print(f"Inserting data for {row['nc_code'], {date}}...")
             cursor.execute('''INSERT INTO historical_inventory (nc_code, date, total_available, supplier_id) VALUES (?, ?, ?, ?)''',
                            (row['nc_code'], date, row['total_available'], row['supplier_id']))
     conn.commit()
-    print(f"Data for date {date} inserted successfully.")
+    # print(f"Data for date {date} inserted successfully.")
 
 
 def process_csv_files(folder_path, db_path):
@@ -75,7 +76,7 @@ def process_csv_files(folder_path, db_path):
             try:
                 date = datetime.strptime(formatted_date, "%Y-%m-%d").date()
                 df = pd.read_csv(file_path)
-                print(f'DataFrame head after reading CSV: \n{df.head()}')
+                # print(f'DataFrame head after reading CSV: \n{df.head()}')
                 insert_historical_data(conn, df, date)
             except ValueError:
                 print(f"Invalid filename format: {file_name}")

@@ -9,3 +9,5 @@ plotly
 scipy
 numpy
 bokeh
+scikit-learn
+requests
