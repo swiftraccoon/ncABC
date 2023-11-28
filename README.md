@@ -35,18 +35,14 @@ To set up this project on your local machine, follow these steps:
    Ensure you have Python installed on your system. Then install the required Python packages:
 
    ```bash
-   pip install -r requirements.txt
+   python3 -m venv ncABC
+   source ncABC/bin/activate
+   pip install -r web/requirements.txt
    ```
 
 3. **Environment Variables**
 
-   Create a `.env` file in the root directory of the project and set the following variables:
-
-   ```
-   DB_FILE_PATH=../data_management/inventory.db
-   INVENTORY_URL=https://abc2.nc.gov/StoresBoards/ExportExcel
-   BACKUP_DIR=../data_management/csv_bkups
-   ```
+   Check the `.env` files in `web` and `data_management` if you're modifying how the project is setup.
 
 4. **Generate the Database**
    
@@ -54,8 +50,9 @@ To set up this project on your local machine, follow these steps:
 
    To do this, run these commands:
    ```bash
-   python data_management/data_management.py
-   python data_management/historical_insert.py
+   cd data_management
+   python data_management.py
+   python historical_insert.py
    ```
 
    You should now have a `data_management/inventory.db`
